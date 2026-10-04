@@ -17,10 +17,18 @@ const names: Record<string, string> = { ebook: 'Ebook', paperback: 'Paperback', 
     <p class="text-muted italic">Forthcoming. Join the newsletter to hear first.</p>
   ) : (
     <ul class="not-prose flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+      {readHref && (
+        <li>
+            <Button variant="primary" href={readHref} >
+              Read online free of charge!
+            </Button>
+        </li>
+        <br>
+      )}
       {formats.map((f) => (
         <li>
           {f.buyUrl ? (
-            <Button variant="primary" href={f.buyUrl} target="_blank" rel="noopener">
+            <Button variant="secondary" href={f.buyUrl} target="_blank" rel="noopener">
               Buy {names[f.format] ?? f.format}
               {f.price ? ` · ${f.price}` : ''}
             </Button>
@@ -31,13 +39,6 @@ const names: Record<string, string> = { ebook: 'Ebook', paperback: 'Paperback', 
           )}
         </li>
       ))}
-      {readHref && (
-        <li>
-          <a href={readHref} class="text-primary underline underline-offset-4 hover:no-underline">
-            read online free of charge
-          </a>
-        </li>
-      )}
     </ul>
   )
 }
