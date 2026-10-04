@@ -4,9 +4,11 @@ import Button from '~/components/ui/Button.astro';
 export interface Props {
   formats: Array<{ format: string; label?: string; price?: string; buyUrl?: string }>;
   status?: 'available' | 'forthcoming';
+  /** If set, adds a "read online free of charge" link next to the buttons. */
+  readHref?: string;
 }
 
-const { formats = [], status = 'available' } = Astro.props;
+const { formats = [], status = 'available', readHref } = Astro.props;
 const names: Record<string, string> = { ebook: 'Ebook', paperback: 'Paperback', audiobook: 'Audiobook' };
 ---
 
@@ -14,7 +16,7 @@ const names: Record<string, string> = { ebook: 'Ebook', paperback: 'Paperback', 
   status === 'forthcoming' ? (
     <p class="text-muted italic">Forthcoming. Join the newsletter to hear first.</p>
   ) : (
-    <ul class="not-prose flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+    <ul class="not-prose flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
       {formats.map((f) => (
         <li>
           {f.buyUrl ? (
@@ -29,6 +31,13 @@ const names: Record<string, string> = { ebook: 'Ebook', paperback: 'Paperback', 
           )}
         </li>
       ))}
+      {readHref && (
+        <li>
+          <a href={readHref} class="text-primary underline underline-offset-4 hover:no-underline">
+            read online free of charge
+          </a>
+        </li>
+      )}
     </ul>
   )
 }

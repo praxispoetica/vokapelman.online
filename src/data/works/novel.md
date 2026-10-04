@@ -5,6 +5,7 @@ type: novel
 status: available
 publishDate: 2026-10-04
 featured: true
+readOnline: true
 tagline: 'A coming-of-age story set against the sweep of history.'
 cover: ~/assets/covers/novel.jpg
 coverAlt: 'Cover of The Long Road to Morning by v. o. kapelman'

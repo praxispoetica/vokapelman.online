@@ -61,6 +61,8 @@ const worksCollection = defineCollection({
       blurb: z.string(),
       tagline: z.string().optional(),
       featured: z.boolean().default(false),
+      /** Show a "read online free of charge" link; needs chapters in src/data/chapters/<slug>/. */
+      readOnline: z.boolean().default(false),
       /** Buy links per format. Use your Payhip/Gumroad product URLs. Omit a format to hide it. */
       formats: z
         .array(
@@ -75,6 +77,17 @@ const worksCollection = defineCollection({
       praise: z.array(z.object({ quote: z.string(), source: z.string() })).default([]),
       metadata: metadataDefinition(),
     }),
+});
+
+const chaptersCollection = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: 'src/data/chapters' }),
+  schema: z.object({
+    title: z.string(),
+    /** Work slug (matches the file id in src/data/works), e.g. "novel". */
+    book: z.string(),
+    order: z.number(),
+    draft: z.boolean().optional(),
+  }),
 });
 
 const postCollection = defineCollection({
@@ -100,5 +113,6 @@ const postCollection = defineCollection({
 
 export const collections = {
   works: worksCollection,
+  chapters: chaptersCollection,
   post: postCollection,
 };

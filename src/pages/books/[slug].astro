@@ -47,7 +47,11 @@ const metadata = {
         {data.tagline && <p class="mt-4 text-lg italic">{data.tagline}</p>}
         <p class="mt-6 text-lg whitespace-pre-line">{data.blurb}</p>
         <div class="mt-8">
-          <BuyButtons formats={data.formats} status={data.status} />
+          <BuyButtons
+            formats={data.formats}
+            status={data.status}
+            readHref={data.readOnline ? `/books/${work.id}/read` : undefined}
+          />
         </div>
         {
           data.praise.length > 0 && (

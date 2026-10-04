@@ -1,0 +1,206 @@
+---
+// Three-column reading layout (Starlight style):
+// left: book title, cover thumbnail, chapter list
+// center: chapter text (slot)
+// right: "On this page" scene index with scroll-spy
+// On small screens the side columns collapse into <details> menus above the text.
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+export interface Props {
+  bookTitle: string;
+  bookHref: string;
+  cover?: ImageMetadata;
+  coverAlt?: string;
+  chapters: Array<{ title: string; href: string; current: boolean }>;
+  scenes: Array<{ text: string; slug: string }>;
+  chapterTitle: string;
+  prev?: { title: string; href: string };
+  next?: { title: string; href: string };
+}
+
+const { bookTitle, bookHref, cover, coverAlt, chapters, scenes, chapterTitle, prev, next } = Astro.props;
+const linkBase = 'block rounded px-3 py-1.5 text-sm transition-colors';
+---
+
+<div class="book-reading max-w-screen-xl mx-auto px-4 sm:px-6 py-6 lg:py-10">
+  <!-- Mobile menus -->
+  <div class="lg:hidden space-y-2 mb-6">
+    <details class="rounded border border-gray-200 dark:border-slate-700 px-3 py-2">
+      <summary class="cursor-pointer font-semibold">Chapters</summary>
+      <ul class="mt-2">
+        {
+          chapters.map((c) => (
+            <li>
+              <a
+                href={c.href}
+                aria-current={c.current ? 'page' : undefined}
+                class:list={[
+                  linkBase,
+                  c.current ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-gray-100 dark:hover:bg-slate-800',
+                ]}
+              >
+                {c.title}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </details>
+    {
+      scenes.length > 0 && (
+        <details class="rounded border border-gray-200 dark:border-slate-700 px-3 py-2">
+          <summary class="cursor-pointer font-semibold">On this page</summary>
+          <ul class="mt-2">
+            {scenes.map((s) => (
+              <li>
+                <a
+                  href={`#${s.slug}`}
+                  data-scene-link={s.slug}
+                  class:list={[linkBase, 'hover:bg-gray-100 dark:hover:bg-slate-800']}
+                >
+                  {s.text}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </details>
+      )
+    }
+  </div>
+
+  <div class="lg:grid lg:grid-cols-[15rem_minmax(0,1fr)_14rem] lg:gap-10">
+    <!-- Left: book + chapters -->
+    <aside class="hidden lg:block" aria-label="Book chapters">
+      <div class="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto pr-2">
+        <a href={bookHref} class="block not-prose">
+          <p class="font-heading text-xl font-bold leading-snug hover:text-primary">{bookTitle}</p>
+          {cover && <Image src={cover} alt={coverAlt ?? bookTitle} width={120} class="mt-3 w-28 rounded shadow-md" />}
+        </a>
+        <nav class="mt-6">
+          <p class="mb-2 text-xs font-bold uppercase tracking-wide text-muted">Chapters</p>
+          <ul>
+            {
+              chapters.map((c) => (
+                <li>
+                  <a
+                    href={c.href}
+                    aria-current={c.current ? 'page' : undefined}
+                    class:list={[
+                      linkBase,
+                      c.current
+                        ? 'bg-primary/10 text-primary font-semibold'
+                        : 'hover:bg-gray-100 dark:hover:bg-slate-800',
+                    ]}
+                  >
+                    {c.title}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Center: reading -->
+    <article class="min-w-0">
+      <p class="text-sm text-muted lg:hidden"><a href={bookHref} class="hover:underline">{bookTitle}</a></p>
+      <h1 class="text-3xl md:text-4xl font-bold font-heading leading-tighter mb-8">{chapterTitle}</h1>
+      <div
+        id="chapter-text"
+        class="prose prose-lg dark:prose-invert max-w-none font-serif prose-headings:font-heading prose-headings:scroll-mt-24 prose-h2:text-2xl prose-a:text-primary"
+      >
+        <slot />
+      </div>
+      <nav
+        class="mt-14 flex justify-between gap-4 border-t border-gray-200 dark:border-slate-700 pt-6"
+        aria-label="Chapter navigation"
+      >
+        {
+          prev ? (
+            <a href={prev.href} class="text-primary hover:underline">
+              ← {prev.title}
+            </a>
+          ) : (
+            <span />
+          )
+        }
+        {
+          next ? (
+            <a href={next.href} class="text-primary hover:underline text-right">
+              {next.title} →
+            </a>
+          ) : (
+            <a href={bookHref} class="text-primary hover:underline text-right">
+              Back to the book page
+            </a>
+          )
+        }
+      </nav>
+    </article>
+
+    <!-- Right: on this page -->
+    <aside class="hidden lg:block" aria-label="On this page">
+      {
+        scenes.length > 0 && (
+          <div class="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto">
+            <p class="mb-2 text-xs font-bold uppercase tracking-wide text-muted">On this page</p>
+            <ul class="border-l border-gray-200 dark:border-slate-700">
+              {scenes.map((s) => (
+                <li>
+                  <a
+                    href={`#${s.slug}`}
+                    data-scene-link={s.slug}
+                    class="block border-l-2 border-transparent -ml-px px-3 py-1.5 text-sm text-muted hover:text-default transition-colors"
+                  >
+                    {s.text}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+    </aside>
+  </div>
+</div>
+
+<style is:global>
+  html:has(.book-reading) {
+    scroll-behavior: smooth;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html:has(.book-reading) {
+      scroll-behavior: auto;
+    }
+  }
+  .book-reading [data-scene-link].is-active {
+    color: var(--aw-color-primary, #2563eb);
+    font-weight: 600;
+  }
+  .book-reading aside [data-scene-link].is-active {
+    border-left-color: var(--aw-color-primary, #2563eb);
+  }
+  .book-reading #chapter-text p {
+    line-height: 1.85;
+  }
+</style>
+
+<script>
+  // Scroll-spy: highlight the scene currently being read.
+  const links = document.querySelectorAll<HTMLElement>('[data-scene-link]');
+  const headings = Array.from(document.querySelectorAll<HTMLElement>('#chapter-text h2[id]'));
+  if (links.length && headings.length && 'IntersectionObserver' in window) {
+    const setActive = (id: string) => links.forEach((l) => l.classList.toggle('is-active', l.dataset.sceneLink === id));
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((e) => e.isIntersecting);
+        if (visible.length) setActive((visible[0].target as HTMLElement).id);
+      },
+      { rootMargin: '-80px 0px -65% 0px' }
+    );
+    headings.forEach((h) => observer.observe(h));
+    setActive(headings[0].id);
+  }
+</script>

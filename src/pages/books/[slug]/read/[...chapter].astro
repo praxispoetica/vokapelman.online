@@ -1,0 +1,61 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Layout from '~/layouts/PageLayout.astro';
+import BookReading from '~/components/widgets/BookReading.astro';
+
+// URLs: /books/novel/read (first chapter) and /books/novel/read/the-gate
+// (getStaticPaths is hoisted, so helpers it needs must live inside it.)
+export async function getStaticPaths() {
+  const slugOf = (id: string) => id.split('/').pop()!.replace(/^\d+-/, '');
+  const works = (await getCollection('works')).filter((w) => w.data.readOnline);
+  const allChapters = await getCollection('chapters', (c) => !c.data.draft);
+  const paths: Array<{ params: { slug: string; chapter: string | undefined }; props: any }> = [];
+
+  for (const work of works) {
+    const chapters = allChapters.filter((c) => c.data.book === work.id).sort((a, b) => a.data.order - b.data.order);
+    chapters.forEach((chapter, index) => {
+      const props = { work, chapters, index };
+      paths.push({ params: { slug: work.id, chapter: slugOf(chapter.id) }, props });
+      // The first chapter is also served at /read (no chapter segment).
+      if (index === 0) paths.push({ params: { slug: work.id, chapter: undefined }, props });
+    });
+  }
+  return paths;
+}
+
+const chapterSlug = (id: string) => id.split('/').pop()!.replace(/^\d+-/, '');
+
+const { work, chapters, index } = Astro.props as {
+  work: CollectionEntry<'works'>;
+  chapters: CollectionEntry<'chapters'>[];
+  index: number;
+};
+const chapter = chapters[index];
+const { Content, headings } = await render(chapter);
+
+const base = `/books/${work.id}/read`;
+const href = (i: number) => `${base}/${chapterSlug(chapters[i].id)}`;
+const nav = chapters.map((c, i) => ({ title: c.data.title, href: href(i), current: i === index }));
+const scenes = headings.filter((h) => h.depth === 2).map((h) => ({ text: h.text, slug: h.slug }));
+
+const metadata = {
+  title: `${chapter.data.title} — ${work.data.title}`,
+  description: `Read ${work.data.title} online free of charge: ${chapter.data.title}.`,
+};
+---
+
+<Layout metadata={metadata}>
+  <BookReading
+    bookTitle={work.data.title}
+    bookHref={`/books/${work.id}`}
+    cover={work.data.cover}
+    coverAlt={work.data.coverAlt}
+    chapters={nav}
+    scenes={scenes}
+    chapterTitle={chapter.data.title}
+    prev={index > 0 ? { title: chapters[index - 1].data.title, href: href(index - 1) } : undefined}
+    next={index < chapters.length - 1 ? { title: chapters[index + 1].data.title, href: href(index + 1) } : undefined}
+  >
+    <Content />
+  </BookReading>
+</Layout>
