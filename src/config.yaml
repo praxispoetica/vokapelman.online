@@ -1,30 +1,28 @@
 site:
-  name: AstroWind
-  site: 'https://astrowind.vercel.app'
+  name: v. o. kapelman
+  site: 'https://vokapelman.online'
   base: '/'
   trailingSlash: false
 
-  googleSiteVerificationId: orcPxI47GSa-cRvY11tUe6iGg2IO_RPvnA1q95iEM3M
+  googleSiteVerificationId: null
 
 # Default SEO metadata
 metadata:
   title:
-    default: AstroWind
-    template: '%s — AstroWind'
-  description: "\U0001F680 Suitable for Startups, Small Business, Sass Websites, Professional Portfolios, Marketing Websites, Landing Pages & Blogs."
+    default: v. o. kapelman — Historical Fiction
+    template: '%s — v. o. kapelman'
+  description: 'Official site of v. o. kapelman, author of historical coming-of-age fiction. Books, excerpts and the journal.'
   robots:
     index: true
     follow: true
   openGraph:
-    site_name: AstroWind
+    site_name: v. o. kapelman
     images:
       - url: '~/assets/images/default.png'
         width: 1200
         height: 628
     type: website
   twitter:
-    handle: '@arthelokyo'
-    site: '@arthelokyo'
     cardType: summary_large_image
 
 i18n:
@@ -44,7 +42,7 @@ apps:
 
     list:
       isEnabled: true
-      pathname: 'blog' # Blog main path, you can change this to "articles" (/articles)
+      pathname: 'journal' # Blog main path, you can change this to "articles" (/articles)
       robots:
         index: true
 

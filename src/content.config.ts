@@ -47,6 +47,36 @@ const metadataDefinition = () =>
     })
     .optional();
 
+const worksCollection = defineCollection({
+  loader: glob({ pattern: ['*.md', '*.mdx'], base: 'src/data/works' }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      subtitle: z.string().optional(),
+      type: z.enum(['novel', 'flash-fiction', 'short-stories', 'poetry']),
+      status: z.enum(['available', 'forthcoming']).default('available'),
+      publishDate: z.date().optional(),
+      cover: image().optional(),
+      coverAlt: z.string().optional(),
+      blurb: z.string(),
+      tagline: z.string().optional(),
+      featured: z.boolean().default(false),
+      /** Buy links per format. Use your Payhip/Gumroad product URLs. Omit a format to hide it. */
+      formats: z
+        .array(
+          z.object({
+            format: z.enum(['ebook', 'paperback', 'audiobook']),
+            label: z.string().optional(),
+            price: z.string().optional(),
+            buyUrl: z.string().optional(),
+          })
+        )
+        .default([]),
+      praise: z.array(z.object({ quote: z.string(), source: z.string() })).default([]),
+      metadata: metadataDefinition(),
+    }),
+});
+
 const postCollection = defineCollection({
   loader: glob({ pattern: ['*.md', '*.mdx'], base: 'src/data/post' }),
   schema: z.object({
@@ -69,5 +99,6 @@ const postCollection = defineCollection({
 });
 
 export const collections = {
+  works: worksCollection,
   post: postCollection,
 };

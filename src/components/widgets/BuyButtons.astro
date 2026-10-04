@@ -1,0 +1,34 @@
+---
+import Button from '~/components/ui/Button.astro';
+
+export interface Props {
+  formats: Array<{ format: string; label?: string; price?: string; buyUrl?: string }>;
+  status?: 'available' | 'forthcoming';
+}
+
+const { formats = [], status = 'available' } = Astro.props;
+const names: Record<string, string> = { ebook: 'Ebook', paperback: 'Paperback', audiobook: 'Audiobook' };
+---
+
+{
+  status === 'forthcoming' ? (
+    <p class="text-muted italic">Forthcoming. Join the newsletter to hear first.</p>
+  ) : (
+    <ul class="not-prose flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+      {formats.map((f) => (
+        <li>
+          {f.buyUrl ? (
+            <Button variant="primary" href={f.buyUrl} target="_blank" rel="noopener">
+              Buy {names[f.format] ?? f.format}
+              {f.price ? ` · ${f.price}` : ''}
+            </Button>
+          ) : (
+            <span class="inline-block rounded border border-gray-300 dark:border-slate-600 px-4 py-2 text-muted">
+              {names[f.format] ?? f.format}: coming soon
+            </span>
+          )}
+        </li>
+      ))}
+    </ul>
+  )
+}
