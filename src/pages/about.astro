@@ -1,6 +1,8 @@
 ---
 import Layout from '~/layouts/PageLayout.astro';
 import HeroText from '~/components/widgets/HeroText.astro';
+import { Image } from 'astro:assets';
+import authorImage from '~/assets/images/victor-mate-square-325.webp';
 
 const metadata = {
   title: 'About',
@@ -11,22 +13,36 @@ const metadata = {
 <Layout metadata={metadata}>
   <HeroText tagline="About" title="v. o. kapelman" />
 
-  <section class="max-w-3xl mx-auto px-4 sm:px-6 pb-16 prose prose-lg dark:prose-invert">
-    <p>
-      <strong>v. o. kapelman</strong> writes historical fiction about young people coming of age in turbulent times. The debut
-      novel, <a href="/books/novel"><em>The Long Road to Morning</em></a>, is a semi-autobiographical bildungsroman.
-      (Sample bio: replace with your own.)
-    </p>
-    <h2>Why I write</h2>
-    <p>
-      Sample text. Family stories, archives and half-remembered streets are the raw material. The goal is always the
-      same: to make a distant time feel as close as the next room.
-    </p>
-    <h2>What's next</h2>
-    <p>
-      Collections of flash fiction, short stories and poetry are planned. Join the{' '}
-      <a href="/#newsletter">reading list</a> to hear first.
-    </p>
-    <p>For press, events or rights inquiries, <a href="/contact">get in touch</a>.</p>
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 pb-16">
+    <div class="grid md:grid-cols-3 gap-8 md:gap-12 items-start">
+      <div class="md:col-span-1 flex justify-center">
+        <Image
+          src={authorImage}
+          alt="v. o. kapelman"
+          class="w-56 sm:w-64 md:w-full rounded-xl shadow-lg border border-gray-200/60 dark:border-slate-800"
+          widths={[256, 325]}
+          sizes="(max-width: 768px) 256px, 325px"
+          loading="eager"
+        />
+      </div>
+      <div class="md:col-span-2 prose prose-lg dark:prose-invert">
+        <p>
+          <strong>v. o. kapelman</strong> writes historical fiction about young people coming of age in turbulent times. The
+          debut novel, <a href="/books/novel"><em>The Long Road to Morning</em></a>, is a semi-autobiographical
+          bildungsroman. (Sample bio: replace with your own.)
+        </p>
+        <h2>Why I write</h2>
+        <p>
+          Sample text. Family stories, archives and half-remembered streets are the raw material. The goal is always the
+          same: to make a distant time feel as close as the next room.
+        </p>
+        <h2>What's next</h2>
+        <p>
+          Collections of flash fiction, short stories and poetry are planned. Join the{' '}
+          <a href="/#newsletter">reading list</a> to hear first.
+        </p>
+        <p>For press, events or rights inquiries, <a href="/contact">get in touch</a>.</p>
+      </div>
+    </div>
   </section>
 </Layout>
