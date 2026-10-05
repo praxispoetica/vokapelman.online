@@ -9,7 +9,12 @@ export async function getStaticPaths() {
   const slugOf = (id: string) => id.split('/').pop()!.replace(/^\d+-/, '');
   const works = (await getCollection('works')).filter((w) => w.data.readOnline);
   const allChapters = await getCollection('chapters', (c) => !c.data.draft);
-  const paths: Array<{ params: { slug: string; chapter: string | undefined }; props: any }> = [];
+  type ChapterProps = {
+    work: CollectionEntry<'works'>;
+    chapters: CollectionEntry<'chapters'>[];
+    index: number;
+  };
+  const paths: Array<{ params: { slug: string; chapter: string | undefined }; props: ChapterProps }> = [];
 
   for (const work of works) {
     const chapters = allChapters.filter((c) => c.data.book === work.id).sort((a, b) => a.data.order - b.data.order);

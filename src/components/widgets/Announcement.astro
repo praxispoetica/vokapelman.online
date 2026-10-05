@@ -36,23 +36,25 @@ const {
         <span class="text-slate-300 dark:text-slate-400 font-medium" set:html={text} />
       ))
   }
-  {showStars && (
-  <a
-    target="_blank"
-    rel="noopener noreferrer"
-    class="ltr:ml-auto rtl:mr-auto ml-auto inline-flex items-center gap-2 text-muted hover:text-black dark:hover:text-white transition duration-150 ease-in-out text-sm"
-    title="PraxisPoetica Publish in Public - vokapelman website repo"
-    href="https://github.com/praxispoetica/vokapelman.online"
-  >
-    <!-- 1. The Icon -->
-    <Icon name="tabler:brand-github" class="w-5 h-5 inline-block align-middle text-white hover:text-sky-400" />
-    
-    <!-- 2. The Text Phrase (Cleaned up colors for global compatibility) -->
-    <span class="inline-block align-middle font-medium text-xs md:text-sm px-1.5 py-0.5 rounded-sm bg-muted dark:bg-slate-700 text-slate-300 dark:text-slate-100 hover:text-sky-500 transition-colors">
-      PraxisPoetica Publish in Public
-    </span>
-    <!-- 3. for Accessibility -->
-    <span class="sr-only">GitHub Repository for this website: PraxisPoetica Publish in Public</span>
-  </a>
-  )} 
+  {
+    showStars && (
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        class="ltr:ml-auto rtl:mr-auto ml-auto inline-flex items-center gap-2 text-muted hover:text-black dark:hover:text-white transition duration-150 ease-in-out text-sm"
+        title="PraxisPoetica Publish in Public - vokapelman website repo"
+        href="https://github.com/praxispoetica/vokapelman.online"
+      >
+        {/* 1. The Icon */}
+        <Icon name="tabler:brand-github" class="w-5 h-5 inline-block align-middle text-white hover:text-sky-400" />
+
+        {/* 2. The Text Phrase (Cleaned up colors for global compatibility) */}
+        <span class="inline-block align-middle font-medium text-xs md:text-sm px-1.5 py-0.5 rounded-sm bg-muted dark:bg-slate-700 text-slate-300 dark:text-slate-100 hover:text-sky-500 transition-colors">
+          PraxisPoetica Publish in Public
+        </span>
+        {/* 3. for Accessibility */}
+        <span class="sr-only">GitHub Repository for this website: PraxisPoetica Publish in Public</span>
+      </a>
+    )
+  }
 </div>
