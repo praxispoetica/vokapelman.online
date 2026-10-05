@@ -2,6 +2,7 @@
 title: 'Letters from the East'
 book: novel
 order: 3
+eof: true
 ---
 
 _Sample text, replace with your chapter._

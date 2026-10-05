@@ -87,6 +87,10 @@ const chaptersCollection = defineCollection({
     book: z.string(),
     order: z.number(),
     draft: z.boolean().optional(),
+    /** Set to false to exclude this chapter from the online reader. Default is true. */
+    readOnline: z.boolean().default(true),
+    /** Set to true on a chapter to mark the end of the free online preview. */
+    eof: z.boolean().optional(),
   }),
 });
 

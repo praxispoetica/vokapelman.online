@@ -13,13 +13,21 @@ export async function getStaticPaths() {
     work: CollectionEntry<'works'>;
     chapters: CollectionEntry<'chapters'>[];
     index: number;
+    hasEofCutoff: boolean;
   };
   const paths: Array<{ params: { slug: string; chapter: string | undefined }; props: ChapterProps }> = [];
 
   for (const work of works) {
-    const chapters = allChapters.filter((c) => c.data.book === work.id).sort((a, b) => a.data.order - b.data.order);
+    const bookChapters = allChapters
+      .filter((c) => c.data.book === work.id && c.data.readOnline !== false)
+      .sort((a, b) => a.data.order - b.data.order);
+
+    const eofIndex = bookChapters.findIndex((c) => c.data.eof);
+    const hasEofCutoff = eofIndex !== -1;
+    const chapters = hasEofCutoff ? bookChapters.slice(0, eofIndex + 1) : bookChapters;
+
     chapters.forEach((chapter, index) => {
-      const props = { work, chapters, index };
+      const props = { work, chapters, index, hasEofCutoff };
       paths.push({ params: { slug: work.id, chapter: slugOf(chapter.id) }, props });
       // The first chapter is also served at /read (no chapter segment).
       if (index === 0) paths.push({ params: { slug: work.id, chapter: undefined }, props });
@@ -30,10 +38,11 @@ export async function getStaticPaths() {
 
 const chapterSlug = (id: string) => id.split('/').pop()!.replace(/^\d+-/, '');
 
-const { work, chapters, index } = Astro.props as {
+const { work, chapters, index, hasEofCutoff } = Astro.props as {
   work: CollectionEntry<'works'>;
   chapters: CollectionEntry<'chapters'>[];
   index: number;
+  hasEofCutoff: boolean;
 };
 const chapter = chapters[index];
 const { Content, headings } = await render(chapter);
@@ -60,6 +69,10 @@ const metadata = {
     chapterTitle={chapter.data.title}
     prev={index > 0 ? { title: chapters[index - 1].data.title, href: href(index - 1) } : undefined}
     next={index < chapters.length - 1 ? { title: chapters[index + 1].data.title, href: href(index + 1) } : undefined}
+    isLastChapter={index === chapters.length - 1}
+    hasEofCutoff={hasEofCutoff}
+    formats={work.data.formats}
+    status={work.data.status}
   >
     <Content />
   </BookReading>
