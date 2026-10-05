@@ -44,8 +44,8 @@ const metadata = {
       <div>
         <h1 class="text-4xl md:text-5xl font-bold font-heading leading-tighter">{data.title}</h1>
         {data.subtitle && <p class="mt-1 text-xl text-muted">{data.subtitle}</p>}
-        {data.tagline && <p class="mt-4 text-lg italic">{data.tagline}</p>}
-        <p class="mt-6 text-lg whitespace-pre-line">{data.blurb}</p>
+        {data.tagline && <p class="mt-4 text-lg font-serif italic">{data.tagline}</p>}
+        <p class="mt-6 text-lg font-serif whitespace-pre-line">{data.blurb}</p>
         <div class="mt-8">
           <BuyButtons
             formats={data.formats}
@@ -68,7 +68,7 @@ const metadata = {
       </div>
     </div>
 
-    <article class="mt-16 prose prose-lg dark:prose-invert mx-auto max-w-3xl">
+    <article class="mt-16 prose prose-lg font-serif dark:prose-invert mx-auto max-w-3xl">
       <Content />
     </article>
 

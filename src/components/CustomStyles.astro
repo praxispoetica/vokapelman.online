@@ -1,14 +1,15 @@
 ---
 // Font family is provided by Astro's native Fonts API (see `fonts` in
 // astro.config.ts and <Font /> in Layout.astro), exposed as `--font-inter`.
+// Inter is the UI/body face; Lora (`--font-lora`) is the serif for headings and reading.
 // To switch typefaces, change the `fonts` entry and repoint `--aw-font-*` below.
 ---
 
 <style is:inline>
   :root {
     --aw-font-sans: var(--font-inter);
-    --aw-font-serif: var(--font-inter);
-    --aw-font-heading: var(--font-inter);
+    --aw-font-serif: var(--font-lora);
+    --aw-font-heading: var(--font-lora);
 
     --aw-color-primary: rgb(0 85 110);
     --aw-color-secondary: rgb(0 117 149);
@@ -17,7 +18,7 @@
     --aw-color-text-heading: rgb(2 26 44);
     --aw-color-text-default: rgb(2 26 44);
     --aw-color-text-muted: rgb(29 93 137 / 84%);
-    --aw-color-bg-page: rgb(255 255 255);
+    --aw-color-bg-page: rgb(251 247 240); /* warm paper */
 
     --aw-color-bg-page-dark: rgb(2 26 44);
 
@@ -28,8 +29,8 @@
 
   .dark {
     --aw-font-sans: var(--font-inter);
-    --aw-font-serif: var(--font-inter);
-    --aw-font-heading: var(--font-inter);
+    --aw-font-serif: var(--font-lora);
+    --aw-font-heading: var(--font-lora);
 
     --aw-color-primary: rgb(0 117 149);
     --aw-color-secondary: rgb(134 213 245);
