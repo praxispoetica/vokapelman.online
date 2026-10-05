@@ -18,12 +18,11 @@ const names: Record<string, string> = { ebook: 'Ebook', paperback: 'Paperback', 
   ) : (
     <ul class="not-prose flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
       {readHref && (
-        <li>
-            <Button variant="primary" href={readHref} >
-              Read online free of charge!
-            </Button>
+        <li class="sm:basis-full">
+          <Button variant="primary" href={readHref}>
+            Read online free of charge!
+          </Button>
         </li>
-        <br>
       )}
       {formats.map((f) => (
         <li>

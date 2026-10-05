@@ -7,8 +7,12 @@ export interface Props {
 }
 
 const { posts } = Astro.props;
+
+// Fit the number of columns to the number of posts so a short row (e.g. 3 posts)
+// is not left with an empty column. Full class names are listed for Tailwind.
+const lgCols = posts.length === 3 ? 'lg:grid-cols-3' : posts.length === 2 ? 'lg:grid-cols-2' : 'lg:grid-cols-4';
 ---
 
-<div class="grid gap-6 row-gap-5 md:grid-cols-2 lg:grid-cols-4 -mb-6">
+<div class:list={['grid gap-6 row-gap-5 md:grid-cols-2 -mb-6', lgCols]}>
   {posts.map((post) => <Item post={post} />)}
 </div>
