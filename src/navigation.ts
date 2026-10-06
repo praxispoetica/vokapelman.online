@@ -1,5 +1,8 @@
 import { getPermalink, getBlogPermalink, getAsset } from './utils/permalinks';
 
+const START_YEAR = '2017';
+const currentYear = new Date().getFullYear();
+
 export const headerData = {
   links: [
     { text: 'Books', href: getPermalink('/books') },
@@ -33,6 +36,6 @@ export const footerData = {
   ],
   socialLinks: [{ ariaLabel: 'RSS', icon: 'tabler:rss', href: getAsset('/rss.xml') }],
   footNote: `
-    © ${new Date().getFullYear()} v. o. kapelman · All rights reserved.
+    © ${START_YEAR}-${currentYear} Victor Opas Kane. <a class="underline hover:text-primary dark:hover:text-white" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">CC BY-NC-ND 4.0 International License</a>
   `,
 };
