@@ -2,6 +2,7 @@
 title: 'The Market Square'
 book: novel
 order: 2
+eof: true
 ---
 
 _Sample text, replace with your chapter._

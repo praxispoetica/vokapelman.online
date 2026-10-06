@@ -12,6 +12,7 @@ export async function getStaticPaths() {
   type ChapterProps = {
     work: CollectionEntry<'works'>;
     chapters: CollectionEntry<'chapters'>[];
+    allBookChapters: CollectionEntry<'chapters'>[];
     index: number;
     hasEofCutoff: boolean;
   };
@@ -27,7 +28,7 @@ export async function getStaticPaths() {
     const chapters = hasEofCutoff ? bookChapters.slice(0, eofIndex + 1) : bookChapters;
 
     chapters.forEach((chapter, index) => {
-      const props = { work, chapters, index, hasEofCutoff };
+      const props = { work, chapters, allBookChapters: bookChapters, index, hasEofCutoff };
       paths.push({ params: { slug: work.id, chapter: slugOf(chapter.id) }, props });
       // The first chapter is also served at /read (no chapter segment).
       if (index === 0) paths.push({ params: { slug: work.id, chapter: undefined }, props });
@@ -38,9 +39,10 @@ export async function getStaticPaths() {
 
 const chapterSlug = (id: string) => id.split('/').pop()!.replace(/^\d+-/, '');
 
-const { work, chapters, index, hasEofCutoff } = Astro.props as {
+const { work, chapters, allBookChapters, index, hasEofCutoff } = Astro.props as {
   work: CollectionEntry<'works'>;
   chapters: CollectionEntry<'chapters'>[];
+  allBookChapters: CollectionEntry<'chapters'>[];
   index: number;
   hasEofCutoff: boolean;
 };
@@ -49,7 +51,15 @@ const { Content, headings } = await render(chapter);
 
 const base = `/books/${work.id}/read`;
 const href = (i: number) => `${base}/${chapterSlug(chapters[i].id)}`;
-const nav = chapters.map((c, i) => ({ title: c.data.title, href: href(i), current: i === index }));
+const nav = allBookChapters.map((c, i) => {
+  const isAvailable = i < chapters.length;
+  return {
+    title: c.data.title,
+    href: isAvailable ? `${base}/${chapterSlug(c.id)}` : undefined,
+    current: isAvailable && i === index,
+    locked: !isAvailable,
+  };
+});
 const scenes = headings.filter((h) => h.depth === 2).map((h) => ({ text: h.text, slug: h.slug }));
 
 const metadata = {

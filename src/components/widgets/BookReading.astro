@@ -13,7 +13,7 @@ export interface Props {
   bookHref: string;
   cover?: ImageMetadata;
   coverAlt?: string;
-  chapters: Array<{ title: string; href: string; current: boolean }>;
+  chapters: Array<{ title: string; href?: string; current: boolean; locked?: boolean }>;
   scenes: Array<{ text: string; slug: string }>;
   chapterTitle: string;
   prev?: { title: string; href: string };
@@ -51,16 +51,24 @@ const linkBase = 'block rounded px-3 py-1.5 text-sm transition-colors';
         {
           chapters.map((c) => (
             <li>
-              <a
-                href={c.href}
-                aria-current={c.current ? 'page' : undefined}
-                class:list={[
-                  linkBase,
-                  c.current ? 'bg-primary/10 text-primary font-semibold' : 'hover:bg-gray-100 dark:hover:bg-slate-800',
-                ]}
-              >
-                {c.title}
-              </a>
+              {c.locked || !c.href ? (
+                <span class:list={[linkBase, 'text-muted/60 dark:text-slate-500 cursor-default select-none']}>
+                  {c.title}
+                </span>
+              ) : (
+                <a
+                  href={c.href}
+                  aria-current={c.current ? 'page' : undefined}
+                  class:list={[
+                    linkBase,
+                    c.current
+                      ? 'bg-primary/10 text-primary font-semibold'
+                      : 'hover:bg-gray-100 dark:hover:bg-slate-800',
+                  ]}
+                >
+                  {c.title}
+                </a>
+              )}
             </li>
           ))
         }
@@ -102,18 +110,24 @@ const linkBase = 'block rounded px-3 py-1.5 text-sm transition-colors';
             {
               chapters.map((c) => (
                 <li>
-                  <a
-                    href={c.href}
-                    aria-current={c.current ? 'page' : undefined}
-                    class:list={[
-                      linkBase,
-                      c.current
-                        ? 'bg-primary/10 text-primary font-semibold'
-                        : 'hover:bg-gray-100 dark:hover:bg-slate-800',
-                    ]}
-                  >
-                    {c.title}
-                  </a>
+                  {c.locked || !c.href ? (
+                    <span class:list={[linkBase, 'text-muted/60 dark:text-slate-500 cursor-default select-none']}>
+                      {c.title}
+                    </span>
+                  ) : (
+                    <a
+                      href={c.href}
+                      aria-current={c.current ? 'page' : undefined}
+                      class:list={[
+                        linkBase,
+                        c.current
+                          ? 'bg-primary/10 text-primary font-semibold'
+                          : 'hover:bg-gray-100 dark:hover:bg-slate-800',
+                      ]}
+                    >
+                      {c.title}
+                    </a>
+                  )}
                 </li>
               ))
             }
