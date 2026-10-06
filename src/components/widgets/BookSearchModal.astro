@@ -1,0 +1,370 @@
+---
+import { Icon } from 'astro-icon/components';
+
+export interface Props {
+  bookSlug: string;
+  bookTitle: string;
+}
+
+const { bookSlug, bookTitle } = Astro.props;
+---
+
+<!-- Search Modal Trigger is wired up via data-open-book-search -->
+<div
+  id="book-search-dialog"
+  class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm transition-opacity"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="book-search-title"
+>
+  <div class="fixed inset-0 overflow-y-auto p-4 sm:p-6 md:p-20 flex justify-center items-start">
+    <div
+      id="book-search-modal-panel"
+      class="relative w-full max-w-xl rounded-2xl bg-white dark:bg-slate-900 shadow-2xl border border-gray-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[80vh] animate-in fade-in zoom-in-95 duration-150"
+    >
+      <!-- Search Input Header -->
+      <div class="flex items-center border-b border-gray-200 dark:border-slate-800 px-4 py-3 gap-3">
+        <Icon name="tabler:search" class="w-5 h-5 text-muted shrink-0" />
+        <label for="book-search-input" id="book-search-title" class="sr-only">Search {bookTitle}</label>
+        <input
+          id="book-search-input"
+          type="search"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          spellcheck="false"
+          placeholder={`Search "${bookTitle}" preview...`}
+          class="w-full bg-transparent text-base text-default placeholder:text-muted focus:outline-none"
+        />
+        <button
+          type="button"
+          id="book-search-clear"
+          class="hidden p-1 text-muted hover:text-default rounded transition"
+          aria-label="Clear query"
+        >
+          <Icon name="tabler:x" class="w-4 h-4" />
+        </button>
+        <button
+          type="button"
+          id="book-search-close"
+          class="p-1 text-muted hover:text-default rounded sm:hidden transition"
+          aria-label="Close search"
+        >
+          <span class="text-sm font-medium">Cancel</span>
+        </button>
+        <kbd
+          class="hidden sm:inline-block px-1.5 py-0.5 text-[11px] font-mono text-muted bg-gray-100 dark:bg-slate-800 rounded border border-gray-300 dark:border-slate-700"
+        >
+          ESC
+        </kbd>
+      </div>
+
+      <!-- Results List -->
+      <div
+        id="book-search-results"
+        class="flex-1 overflow-y-auto p-3 space-y-1 divide-y divide-gray-100 dark:divide-slate-800/60"
+      >
+        <div id="book-search-placeholder" class="py-12 text-center text-muted text-sm">
+          <p class="font-medium text-default mb-1">Search the online preview</p>
+          <p class="text-xs">Type a keyword, character name, or scene heading to search.</p>
+        </div>
+        <div id="book-search-empty" class="hidden py-12 text-center text-muted text-sm">
+          <p class="font-medium text-default mb-1">No matching results found</p>
+          <p class="text-xs">Try different search terms or check spelling.</p>
+        </div>
+        <ul id="book-search-list" class="space-y-1"></ul>
+      </div>
+
+      <!-- Footer Bar -->
+      <div
+        class="px-4 py-2.5 border-t border-gray-100 dark:border-slate-800/80 bg-gray-50/60 dark:bg-slate-950/40 text-xs text-muted flex items-center justify-between"
+      >
+        <div class="hidden sm:flex items-center gap-3">
+          <span
+            ><kbd
+              class="font-mono bg-white dark:bg-slate-800 px-1 py-0.5 rounded border border-gray-200 dark:border-slate-700"
+              >↑</kbd
+            >
+            <kbd
+              class="font-mono bg-white dark:bg-slate-800 px-1 py-0.5 rounded border border-gray-200 dark:border-slate-700"
+              >↓</kbd
+            > to navigate</span
+          >
+          <span
+            ><kbd
+              class="font-mono bg-white dark:bg-slate-800 px-1 py-0.5 rounded border border-gray-200 dark:border-slate-700"
+              >↵</kbd
+            > to select</span
+          >
+          <span
+            ><kbd
+              class="font-mono bg-white dark:bg-slate-800 px-1 py-0.5 rounded border border-gray-200 dark:border-slate-700"
+              >esc</kbd
+            > to close</span
+          >
+        </div>
+        <span class="ml-auto text-[11px] text-muted">Preview search</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script is:inline define:vars={{ bookSlug }}>
+  (() => {
+    let searchData = null;
+    let isLoading = false;
+    let selectedIndex = -1;
+
+    const dialog = document.getElementById('book-search-dialog');
+    const input = document.getElementById('book-search-input');
+    const clearBtn = document.getElementById('book-search-clear');
+    const closeBtn = document.getElementById('book-search-close');
+    const list = document.getElementById('book-search-list');
+    const placeholder = document.getElementById('book-search-placeholder');
+    const empty = document.getElementById('book-search-empty');
+    const modalPanel = document.getElementById('book-search-modal-panel');
+
+    const openSearch = async () => {
+      dialog?.classList.remove('hidden');
+      document.body.classList.add('overflow-hidden');
+      input?.focus();
+      input?.select();
+
+      // Lazy load index when modal first opens
+      if (!searchData && !isLoading) {
+        isLoading = true;
+        try {
+          const res = await fetch(`/books/${bookSlug}/search.json`);
+          if (res.ok) {
+            searchData = await res.json();
+          }
+        } catch (e) {
+          console.error('Failed to load book search index', e);
+        } finally {
+          isLoading = false;
+        }
+      }
+    };
+
+    const closeSearch = () => {
+      dialog?.classList.add('hidden');
+      document.body.classList.remove('overflow-hidden');
+      if (input) input.value = '';
+      if (clearBtn) clearBtn.classList.add('hidden');
+      if (list) list.innerHTML = '';
+      if (placeholder) placeholder.classList.remove('hidden');
+      if (empty) empty.classList.add('hidden');
+      selectedIndex = -1;
+    };
+
+    // Global keyboard triggers (Cmd+K, Ctrl+K, or / when outside inputs)
+    window.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        if (dialog?.classList.contains('hidden')) {
+          openSearch();
+        } else {
+          closeSearch();
+        }
+      } else if (e.key === 'Escape' && !dialog?.classList.contains('hidden')) {
+        e.preventDefault();
+        closeSearch();
+      } else if (
+        e.key === '/' &&
+        dialog?.classList.contains('hidden') &&
+        !['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName || '')
+      ) {
+        e.preventDefault();
+        openSearch();
+      }
+    });
+
+    // Wire up buttons with data-open-book-search
+    document.querySelectorAll('[data-open-book-search]').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        openSearch();
+      });
+    });
+
+    closeBtn?.addEventListener('click', closeSearch);
+    clearBtn?.addEventListener('click', () => {
+      if (input) {
+        input.value = '';
+        input.focus();
+        renderResults('');
+      }
+    });
+
+    // Close when clicking outside panel
+    dialog?.addEventListener('click', (e) => {
+      if (e.target === dialog || !modalPanel?.contains(e.target)) {
+        closeSearch();
+      }
+    });
+
+    const highlightMatches = (text, terms) => {
+      if (!terms.length) return text;
+      const regex = new RegExp(`(${terms.map((t) => t.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\$&')).join('|')})`, 'gi');
+      return text.replace(regex, '<mark class="bg-primary/20 text-primary font-semibold rounded-xs px-0.5">$1</mark>');
+    };
+
+    const getSnippet = (text, terms, maxLength = 120) => {
+      if (!terms.length) return text.slice(0, maxLength) + (text.length > maxLength ? '…' : '');
+      const lowerText = text.toLowerCase();
+      let firstIdx = -1;
+      for (const term of terms) {
+        const idx = lowerText.indexOf(term.toLowerCase());
+        if (idx !== -1 && (firstIdx === -1 || idx < firstIdx)) {
+          firstIdx = idx;
+        }
+      }
+      if (firstIdx === -1) return text.slice(0, maxLength) + (text.length > maxLength ? '…' : '');
+      const start = Math.max(0, firstIdx - 40);
+      const end = Math.min(text.length, firstIdx + maxLength - 40);
+      const prefix = start > 0 ? '… ' : '';
+      const suffix = end < text.length ? ' …' : '';
+      return prefix + highlightMatches(text.slice(start, end), terms) + suffix;
+    };
+
+    const renderResults = (query) => {
+      const q = query.trim().toLowerCase();
+      if (!list || !placeholder || !empty || !clearBtn) return;
+
+      if (!q) {
+        clearBtn.classList.add('hidden');
+        list.innerHTML = '';
+        placeholder.classList.remove('hidden');
+        empty.classList.add('hidden');
+        selectedIndex = -1;
+        return;
+      }
+
+      clearBtn.classList.remove('hidden');
+      placeholder.classList.add('hidden');
+
+      if (!searchData || !searchData.length) {
+        empty.classList.remove('hidden');
+        list.innerHTML = '';
+        return;
+      }
+
+      const terms = q.split(/\s+/).filter(Boolean);
+
+      // Score and rank matches
+      const matches = [];
+      for (const item of searchData) {
+        const titleLower = item.sceneTitle.toLowerCase();
+        const chapterLower = item.chapterTitle.toLowerCase();
+        const textLower = item.text.toLowerCase();
+
+        let score = 0;
+        let matched = true;
+
+        for (const term of terms) {
+          if (titleLower.includes(term)) {
+            score += 10;
+          } else if (chapterLower.includes(term)) {
+            score += 5;
+          } else if (textLower.includes(term)) {
+            score += 2;
+          } else {
+            matched = false;
+            break;
+          }
+        }
+
+        if (matched && score > 0) {
+          matches.push({ item, score });
+        }
+      }
+
+      matches.sort((a, b) => b.score - a.score);
+
+      if (!matches.length) {
+        empty.classList.remove('hidden');
+        list.innerHTML = '';
+        selectedIndex = -1;
+        return;
+      }
+
+      empty.classList.add('hidden');
+      selectedIndex = 0;
+
+      list.innerHTML = matches
+        .slice(0, 15)
+        .map(({ item }, idx) => {
+          const highlightedTitle = highlightMatches(item.sceneTitle, terms);
+          const snippet = getSnippet(item.text, terms);
+
+          return `
+            <li>
+              <a
+                href="${item.url}"
+                data-result-index="${idx}"
+                class="book-search-item block rounded-xl px-3.5 py-2.5 transition text-left ${
+                  idx === 0 ? 'bg-primary/10 dark:bg-primary/15' : 'hover:bg-gray-100 dark:hover:bg-slate-800'
+                }"
+              >
+                <div class="flex items-center gap-2 text-xs text-muted mb-0.5">
+                  <span>${item.chapterTitle}</span>
+                  <span>›</span>
+                  <span class="font-medium text-default">${highlightedTitle}</span>
+                </div>
+                <p class="text-xs text-muted/90 line-clamp-2 leading-relaxed">
+                  ${snippet}
+                </p>
+              </a>
+            </li>
+          `;
+        })
+        .join('');
+
+      // Click on any result item navigates and closes
+      list.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => {
+          closeSearch();
+        });
+      });
+    };
+
+    input?.addEventListener('input', (e) => {
+      renderResults(e.target.value);
+    });
+
+    const updateActiveSelection = () => {
+      const items = list?.querySelectorAll('.book-search-item') || [];
+      items.forEach((item, idx) => {
+        if (idx === selectedIndex) {
+          item.classList.add('bg-primary/10', 'dark:bg-primary/15');
+          item.classList.remove('hover:bg-gray-100', 'dark:hover:bg-slate-800');
+          item.scrollIntoView({ block: 'nearest' });
+        } else {
+          item.classList.remove('bg-primary/10', 'dark:bg-primary/15');
+          item.classList.add('hover:bg-gray-100', 'dark:hover:bg-slate-800');
+        }
+      });
+    };
+
+    // Keyboard navigation within list
+    input?.addEventListener('keydown', (e) => {
+      const items = list?.querySelectorAll('.book-search-item') || [];
+      if (!items.length) return;
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        selectedIndex = (selectedIndex + 1) % items.length;
+        updateActiveSelection();
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        selectedIndex = (selectedIndex - 1 + items.length) % items.length;
+        updateActiveSelection();
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (selectedIndex >= 0 && items[selectedIndex]) {
+          items[selectedIndex].click();
+        }
+      }
+    });
+  })();
+</script>

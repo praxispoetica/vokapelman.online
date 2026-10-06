@@ -70,6 +70,7 @@ const metadata = {
 
 <Layout metadata={metadata}>
   <BookReading
+    bookSlug={work.id}
     bookTitle={work.data.title}
     bookHref={`/books/${work.id}`}
     cover={work.data.cover}

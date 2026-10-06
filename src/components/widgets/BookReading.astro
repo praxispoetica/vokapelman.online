@@ -6,9 +6,12 @@
 // On small screens the side columns collapse into <details> menus above the text.
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
+import { Icon } from 'astro-icon/components';
 import BuyButtons from '~/components/widgets/BuyButtons.astro';
+import BookSearchModal from '~/components/widgets/BookSearchModal.astro';
 
 export interface Props {
+  bookSlug?: string;
   bookTitle: string;
   bookHref: string;
   cover?: ImageMetadata;
@@ -25,6 +28,7 @@ export interface Props {
 }
 
 const {
+  bookSlug,
   bookTitle,
   bookHref,
   cover,
@@ -45,6 +49,23 @@ const linkBase = 'block rounded px-3 py-1.5 text-sm transition-colors';
 <div class="book-reading max-w-screen-xl mx-auto px-4 sm:px-6 py-6 lg:py-10">
   <!-- Mobile menus -->
   <div class="lg:hidden space-y-2 mb-6">
+    {
+      bookSlug && (
+        <button
+          type="button"
+          data-open-book-search
+          class="w-full flex items-center justify-between px-3.5 py-2 text-sm text-muted bg-gray-100/90 hover:bg-gray-200/90 dark:bg-slate-800/90 dark:hover:bg-slate-700/90 rounded-xl border border-gray-200 dark:border-slate-700 transition cursor-pointer"
+        >
+          <span class="flex items-center gap-2">
+            <Icon name="tabler:search" class="w-4 h-4 text-muted" />
+            <span>Search in preview...</span>
+          </span>
+          <kbd class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-700 text-muted">
+            ⌘K
+          </kbd>
+        </button>
+      )
+    }
     <details class="rounded border border-gray-200 dark:border-slate-700 px-3 py-2">
       <summary class="cursor-pointer font-semibold">Chapters</summary>
       <ul class="mt-2">
@@ -104,7 +125,26 @@ const linkBase = 'block rounded px-3 py-1.5 text-sm transition-colors';
           <p class="font-heading text-xl font-bold leading-snug hover:text-primary">{bookTitle}</p>
           {cover && <Image src={cover} alt={coverAlt ?? bookTitle} width={120} class="mt-3 w-28 rounded shadow-md" />}
         </a>
-        <nav class="mt-6">
+
+        {
+          bookSlug && (
+            <button
+              type="button"
+              data-open-book-search
+              class="w-full flex items-center justify-between px-3 py-2 text-sm text-muted bg-gray-100/80 hover:bg-gray-200/80 dark:bg-slate-800/80 dark:hover:bg-slate-700/80 rounded-lg border border-gray-200 dark:border-slate-700 transition my-4 group cursor-pointer"
+            >
+              <span class="flex items-center gap-2">
+                <Icon name="tabler:search" class="w-4 h-4 text-muted group-hover:text-primary transition" />
+                <span>Search preview...</span>
+              </span>
+              <kbd class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-700 text-muted">
+                ⌘K
+              </kbd>
+            </button>
+          )
+        }
+
+        <nav class={bookSlug ? 'mt-2' : 'mt-6'}>
           <p class="mb-2 text-xs font-bold uppercase tracking-wide text-muted">Chapters</p>
           <ul>
             {
@@ -227,6 +267,7 @@ const linkBase = 'block rounded px-3 py-1.5 text-sm transition-colors';
       }
     </aside>
   </div>
+  {bookSlug && <BookSearchModal bookSlug={bookSlug} bookTitle={bookTitle} />}
 </div>
 
 <style is:global>
