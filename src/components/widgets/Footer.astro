@@ -74,10 +74,13 @@ const { socialLinks = [], secondaryLinks = [], links = [], footNote = '', theme 
         ))
       }
     </div>
-    <div class="md:flex md:items-center md:justify-between py-6 md:py-8">
+    <div class="relative flex flex-col md:flex-row items-center justify-center py-6 md:py-8">
+      <div class="text-sm text-center dark:text-muted w-full px-4 md:px-12">
+        <Fragment set:html={footNote} />
+      </div>
       {
         socialLinks?.length ? (
-          <ul class="flex mb-4 md:order-1 -ml-2 md:ml-4 md:mb-0 rtl:ml-0 rtl:-mr-2 rtl:md:ml-0 rtl:md:mr-4">
+          <ul class="flex mt-4 md:mt-0 md:absolute md:right-0 -ml-2 md:ml-0 rtl:ml-0 rtl:-mr-2 rtl:md:mr-0">
             {socialLinks.map(({ ariaLabel, href, text, icon }) => (
               <li>
                 <a
@@ -95,10 +98,6 @@ const { socialLinks = [], secondaryLinks = [], links = [], footNote = '', theme 
           ''
         )
       }
-
-      <div class="text-sm mr-4 dark:text-muted">
-        <Fragment set:html={footNote} />
-      </div>
     </div>
   </div>
 </footer>
