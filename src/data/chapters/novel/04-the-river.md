@@ -16,5 +16,3 @@ there is a lady on tiktok who instead of showing her ass or flirtingly shifting 
 ## Clean hands
 
 sometimes I just love to clean the toilet bowl with my bare hand rubbing u clean. you look so white and smooth and ceramic key. indeed it turns in me that key; I take a bar of soap and wash myself. I love the thing I love to do is never used toilet paper. when I came to Argentina 50 years ago, I discovered the biday, yes, the bidet. oh, to wash my ass with my bare hands in such an Allen Ginsburg way, it's just so effective, and besides it's nice being so finger sweet to yourself in the morning 
-
-© 2025 Victor Opas Kane. This work by v. o. kapelman is available under a [Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License (CC BY-NC-ND 4.0)](https://creativecommons.org/licenses/by-nc-nd/4.0/).
