@@ -60,8 +60,11 @@ const linkBase = 'block rounded px-3 py-1.5 text-sm transition-colors';
             <Icon name="tabler:search" class="w-4 h-4 text-muted" />
             <span>Search in preview...</span>
           </span>
-          <kbd class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-700 text-muted">
-            ⌘K
+          <kbd
+            data-search-shortcut-badge
+            class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-700 text-muted"
+          >
+            Ctrl K
           </kbd>
         </button>
       )
@@ -137,8 +140,11 @@ const linkBase = 'block rounded px-3 py-1.5 text-sm transition-colors';
                 <Icon name="tabler:search" class="w-4 h-4 text-muted group-hover:text-primary transition" />
                 <span>Search preview...</span>
               </span>
-              <kbd class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-700 text-muted">
-                ⌘K
+              <kbd
+                data-search-shortcut-badge
+                class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-700 text-muted"
+              >
+                Ctrl K
               </kbd>
             </button>
           )
@@ -293,18 +299,23 @@ const linkBase = 'block rounded px-3 py-1.5 text-sm transition-colors';
 
 <script>
   // Scroll-spy: highlight the scene currently being read.
-  const links = document.querySelectorAll<HTMLElement>('[data-scene-link]');
-  const headings = Array.from(document.querySelectorAll<HTMLElement>('#chapter-text h2[id]'));
-  if (links.length && headings.length && 'IntersectionObserver' in window) {
-    const setActive = (id: string) => links.forEach((l) => l.classList.toggle('is-active', l.dataset.sceneLink === id));
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.filter((e) => e.isIntersecting);
-        if (visible.length) setActive((visible[0].target as HTMLElement).id);
-      },
-      { rootMargin: '-80px 0px -65% 0px' }
-    );
-    headings.forEach((h) => observer.observe(h));
-    setActive(headings[0].id);
-  }
+  const initScrollSpy = () => {
+    const links = document.querySelectorAll<HTMLElement>('[data-scene-link]');
+    const headings = Array.from(document.querySelectorAll<HTMLElement>('#chapter-text h2[id]'));
+    if (links.length && headings.length && 'IntersectionObserver' in window) {
+      const setActive = (id: string) =>
+        links.forEach((l) => l.classList.toggle('is-active', l.dataset.sceneLink === id));
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const visible = entries.filter((e) => e.isIntersecting);
+          if (visible.length) setActive((visible[0].target as HTMLElement).id);
+        },
+        { rootMargin: '-80px 0px -65% 0px' }
+      );
+      headings.forEach((h) => observer.observe(h));
+      if (headings[0]) setActive(headings[0].id);
+    }
+  };
+
+  document.addEventListener('astro:page-load', initScrollSpy);
 </script>
