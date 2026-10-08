@@ -10,7 +10,7 @@ export const headerData = {
     { text: 'Journal', href: getBlogPermalink() },
     { text: 'Contact', href: getPermalink('/contact') },
   ],
-  actions: [{ text: 'Join the reading list', href: getPermalink('/#newsletter') }],
+  actions: [{ text: 'Join on Substack', href: getPermalink('/#newsletter') }],
 };
 
 export const footerData = {

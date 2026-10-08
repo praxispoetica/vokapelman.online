@@ -344,6 +344,13 @@ export interface Newsletter extends Omit<Headline, 'classes'>, Widget {
   layout?: 'band' | 'card';
 }
 
+export interface SubstackCTA extends Omit<Headline, 'classes'>, Widget {
+  buttonText?: string;
+  url?: string;
+  disclaimer?: string;
+  layout?: 'band' | 'card';
+}
+
 export interface Quote extends Widget {
   quote?: string;
   name?: string;

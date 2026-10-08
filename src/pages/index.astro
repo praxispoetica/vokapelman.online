@@ -4,7 +4,7 @@ import { Image } from 'astro:assets';
 import Layout from '~/layouts/PageLayout.astro';
 import Button from '~/components/ui/Button.astro';
 import BuyButtons from '~/components/widgets/BuyButtons.astro';
-import Newsletter from '~/components/widgets/Newsletter.astro';
+import SubstackCTA from '~/components/widgets/SubstackCTA.astro';
 import BlogLatestPosts from '~/components/widgets/BlogLatestPosts.astro';
 import authorImage from '~/assets/images/victor-mate-square-325.webp';
 
@@ -74,11 +74,11 @@ const featured = works.find((w) => w.data.featured) ?? works[0];
     <div class="mt-6"><Button variant="secondary" href="/about">More about v. o. kapelman</Button></div>
   </section>
 
-  <Newsletter
+  <SubstackCTA
     id="newsletter"
-    title="Join the reading list"
+    title="Join me on Substack"
     subtitle="News of new releases, flash fiction, short stories and poetry collections, plus the occasional essay."
-    disclaimer="No spam. Unsubscribe anytime."
+    buttonText="Subscribe on Substack"
   />
 
   <BlogLatestPosts

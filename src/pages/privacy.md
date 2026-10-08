@@ -9,7 +9,7 @@ _Last updated_: October 4, 2026
 
 ## What I collect
 
-- **Newsletter:** your email address, if you subscribe, held by my email provider.
+- **Newsletter / Substack:** email subscriptions are managed directly through Substack under their privacy policy.
 - **Contact form:** the name, email and message you send.
 - **Purchases:** handled by the payment platform. I receive your name, email and order details but never your card number.
 
