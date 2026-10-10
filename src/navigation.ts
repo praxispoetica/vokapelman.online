@@ -37,7 +37,7 @@ export const footerData = {
   socialLinks: [{ ariaLabel: 'RSS', icon: 'tabler:rss', href: getAsset('/rss.xml') }],
   footNote: `
     <div class="text-center leading-relaxed">
-      © ${START_YEAR}-${currentYear} v. o. kapelman. Works and content shared<br />under a <a class="underline hover:text-primary dark:hover:text-white" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License (CC BY-NC-ND 4.0)</a>
+      © ${START_YEAR}-${currentYear} v. o. kapelman. Works and content shared on vokapelman.online <br />under a <a class="underline hover:text-primary dark:hover:text-white" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License (CC BY-NC-ND 4.0)</a>
     </div>
   `,
 };
