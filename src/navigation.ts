@@ -10,7 +10,7 @@ export const headerData = {
     { text: 'Journal', href: getBlogPermalink() },
     { text: 'Contact', href: getPermalink('/contact') },
   ],
-  actions: [{ text: 'Join on Substack', href: getPermalink('/#newsletter') }],
+  actions: [{ text: 'Updates via Substack', href: getPermalink('/#newsletter') }],
 };
 
 export const footerData = {
@@ -37,7 +37,7 @@ export const footerData = {
   socialLinks: [{ ariaLabel: 'RSS', icon: 'tabler:rss', href: getAsset('/rss.xml') }],
   footNote: `
     <div class="text-center leading-relaxed">
-      © ${START_YEAR}-${currentYear} Victor Opas Kane. All works and content by v. o. kapelman is available<br />under a <a class="underline hover:text-primary dark:hover:text-white" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License (CC BY-NC-ND 4.0)</a>
+      © ${START_YEAR}-${currentYear} v. o. kapelman. Works and content shared<br />under a <a class="underline hover:text-primary dark:hover:text-white" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License (CC BY-NC-ND 4.0)</a>
     </div>
   `,
 };
