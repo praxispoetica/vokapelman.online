@@ -13,12 +13,12 @@ blurb: 'Sample blurb. In a town on the edge of a collapsing empire, fourteen-yea
 formats:
   - format: ebook
     label: 'Ebook (EPUB + PDF, DRM-free)'
-    price: '$9.99'
-    buyUrl: 'https://payhip.com/b/EXAMPLE-EBOOK' # sample link: replace with your Payhip / Gumroad product
+    price:  'voluntary support:  $0 - $9.99)' # 'voluntary support: $0 - $9.99'
+    # buyUrl: '#' # 'https://payhip.com/b/EXAMPLE-EBOOK' # sample link: replace with your Payhip / Gumroad product
   - format: paperback
     label: 'Paperback'
-    price: '$17.99'
-    buyUrl: 'https://example.com/paperback' # sample link: replace with your print-on-demand page
+    price: '$14.99' #
+    # buyUrl: 'https://example.com/paperback' # sample link: replace with your print-on-demand page
 praise:
   - quote: 'A tender, unflinching portrait of growing up in turbulent times.'
     source: 'Sample Review Quarterly'

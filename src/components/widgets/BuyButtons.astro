@@ -28,7 +28,7 @@ const names: Record<string, string> = { ebook: 'Ebook', paperback: 'Paperback', 
         <li>
           {f.buyUrl ? (
             <Button variant="secondary" href={f.buyUrl} target="_blank" rel="noopener">
-              Buy {names[f.format] ?? f.format}
+              Access {names[f.format] ?? f.format}
               {f.price ? ` · ${f.price}` : ''}
             </Button>
           ) : (
