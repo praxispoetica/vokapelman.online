@@ -2,14 +2,20 @@
 import type { Form as Props } from '~/types';
 import Button from '~/components/ui/Button.astro';
 
-const { inputs, textarea, disclaimer, button = 'Contact us', description = '' } = Astro.props;
+const { action, inputs, textarea, disclaimer, button = 'Contact us', description = '' } = Astro.props;
+const isMailto = action?.startsWith('mailto:');
 ---
 
-<form>
+<form
+  action={action}
+  method={isMailto ? 'POST' : undefined}
+  enctype={isMailto ? 'text/plain' : undefined}
+  data-mailto-form={isMailto ? '' : undefined}
+>
   {
     inputs &&
       inputs.map(
-        ({ type = 'text', name, label = '', autocomplete = 'on', placeholder = '' }) =>
+        ({ type = 'text', name, label = '', autocomplete = 'on', placeholder = '', required = false }) =>
           name && (
             <div class="mb-6">
               {label && (
@@ -23,6 +29,7 @@ const { inputs, textarea, disclaimer, button = 'Contact us', description = '' } 
                 id={name}
                 autocomplete={autocomplete}
                 placeholder={placeholder}
+                required={required}
                 class="py-3 px-4 block w-full text-md rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-900"
               />
             </div>
@@ -41,6 +48,7 @@ const { inputs, textarea, disclaimer, button = 'Contact us', description = '' } 
           name={textarea.name ? textarea.name : 'message'}
           rows={textarea.rows ? textarea.rows : 4}
           placeholder={textarea.placeholder}
+          required={textarea.required}
           class="py-3 px-4 block w-full text-md rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-900"
         />
       </div>
@@ -80,8 +88,61 @@ const { inputs, textarea, disclaimer, button = 'Contact us', description = '' } 
   {
     description && (
       <div class="mt-3 text-center">
-        <p class="text-sm text-gray-600 dark:text-gray-400">{description}</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400" set:html={description} />
       </div>
     )
   }
 </form>
+
+<script>
+  const initMailtoForms = () => {
+    const forms = document.querySelectorAll<HTMLFormElement>('form[data-mailto-form]');
+    forms.forEach((form) => {
+      if (form.dataset.mailtoBound) return;
+      form.dataset.mailtoBound = 'true';
+
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const rawAction = form.getAttribute('action') || '';
+        const recipient = rawAction
+          .replace(/^mailto:/i, '')
+          .split('?')[0]
+          .trim();
+        if (!recipient) return;
+
+        const formData = new FormData(form);
+        const name = (formData.get('name') || '').toString().trim();
+        const email = (formData.get('email') || '').toString().trim();
+        const textareaEl = form.querySelector<HTMLTextAreaElement>('textarea');
+        const message = textareaEl ? textareaEl.value.trim() : (formData.get('message') || '').toString().trim();
+
+        const subject = name ? `Message from ${name} via vokapelman.online` : 'Message via vokapelman.online';
+
+        const lines: string[] = [];
+        if (name) lines.push(`Name: ${name}`);
+        if (email) lines.push(`Email: ${email}`);
+
+        formData.forEach((value, key) => {
+          if (['name', 'email', 'message', 'disclaimer'].includes(key)) return;
+          if (textareaEl && key === textareaEl.name) return;
+          const valStr = value.toString().trim();
+          if (valStr) {
+            lines.push(`${key}: ${valStr}`);
+          }
+        });
+
+        if (lines.length > 0) lines.push('');
+        if (message) lines.push(message);
+
+        const body = lines.join('\n');
+        const mailtoUrl = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+        window.location.href = mailtoUrl;
+      });
+    });
+  };
+
+  document.addEventListener('astro:page-load', initMailtoForms);
+</script>
+
