@@ -13,7 +13,7 @@ blurb: 'Sample blurb. In a town on the edge of a collapsing empire, fourteen-yea
 formats:
   - format: ebook
     label: 'Ebook (EPUB + PDF, DRM-free)'
-    price:  'voluntary support:  $0 - $9.99)' # 'voluntary support: $0 - $9.99'
+    price: 'voluntary support:  $0 - $9.99)' # 'voluntary support: $0 - $9.99'
     # buyUrl: '#' # 'https://payhip.com/b/EXAMPLE-EBOOK' # sample link: replace with your Payhip / Gumroad product
   - format: paperback
     label: 'Paperback'
